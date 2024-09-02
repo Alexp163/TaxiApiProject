@@ -1,0 +1,11 @@
+1. Создаем проект на github
+1.1 Нажимаем кнопку "new"
+1.2 Жмем "public"
+1.3 Жмем "gitignor" - выбираем "python"
+1.4 Жмем "Readme"
+1.5 Жмем "license" - выбираем MIT license
+2. Через <code>(зеленая кнопка) копируем ssh ссылку
+3. Добавляем её через терминал и команду gitclone:
+    "git clone git@github.com:Alexp163/TaxiApiProject.git"
+4. При создании импорта Base возникает проблема поиска корневой папки. Мы её определяем
+через "Marc directory as"(находится в конце). Нужно выбрать "Sources Root"

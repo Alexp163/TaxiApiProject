@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy import select, insert, delete, update
 
 from database import get_async_session
-from models import Driver
-from schemas import DriverCreateSchema, DriverReadSchema, DriverUpdateSchema
+from .models import Driver
+from .schemas import DriverCreateSchema, DriverReadSchema, DriverUpdateSchema
 
 router = APIRouter(tags=["drivers"], prefix="/drivers")
 

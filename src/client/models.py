@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from psycopg2._psycopg import Float
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.sql import func
 

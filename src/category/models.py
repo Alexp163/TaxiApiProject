@@ -8,7 +8,7 @@ from database import Base
 
 class Category(Base):  # категория машины
     __tablename__ = "category"
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
     title: Mapped[str] = mapped_column()  # название категории
     schedule: Mapped[str] = mapped_column()  # часы работы в категории
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())  # дата создания

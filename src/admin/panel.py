@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from sqladmin import ModelView, Admin
 from sqlalchemy.ext.asyncio import AsyncEngine
 
-from .dependecies import Driver, Client, Car
+from .dependecies import Driver, Client, Car, Category
 
 
 class DriverModelView(ModelView, model=Driver):
@@ -16,8 +16,13 @@ class ClientModelView(ModelView, model=Client):
 
 
 class CarModelView(ModelView, model=Car):
-    column_list = [Car.brand, Car.release, Car.condition, Car.configuration]
+    column_list = [Car.brand, Car.category, Car.category_id, Car.release, Car.condition, Car.configuration]
     form_excluded_columns = [Car.created_at, Car.updated_at]
+
+
+class CategoryModelView(ModelView, model=Category):
+    column_list = [Category.title, Category.schedule]
+    form_excluded_columns = [Category.created_at, Category.updated_at]
 
 
 def register_admin(app: FastAPI, engine: AsyncEngine):
@@ -25,4 +30,5 @@ def register_admin(app: FastAPI, engine: AsyncEngine):
     admin.add_view(DriverModelView)
     admin.add_view(CarModelView)
     admin.add_view(ClientModelView)
+    admin.add_view(CategoryModelView)
 

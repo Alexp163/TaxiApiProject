@@ -24,3 +24,4 @@ class Order(Base):
         return f"{self.price} {self.date_trip} {self.travel_time} {self.driver_id} {self.client_id}"
 
 
+

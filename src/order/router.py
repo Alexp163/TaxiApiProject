@@ -17,18 +17,18 @@ async def create_order(order: OrderCreateSchema, session=Depends(get_async_sessi
         driver_id=order.driver_id
     ).returning(Order)
     result = await session.scalar(statement)
-    await session.commit
+    await session.commit()
     return  result
 
 
-@router.get("/", status_code=status.HTTP_202_ACCEPTED)  # 2) получение данных о всех заказах
+@router.get("/", status_code=status.HTTP_200_OK)  # 2) получение данных о всех заказах
 async def get_orders(session=Depends(get_async_session)) -> list[OrderReadSchema]:
     statement = select(Order)
     result = await session.scalars(statement)
     return list(result)
 
 
-@router.get("/{order_id}", status_code=status.HTTP_202_ACCEPTED)  # 3) получение данных о заказе по id
+@router.get("/{order_id}", status_code=status.HTTP_200_OK)  # 3) получение данных о заказе по id
 async def get_order_by_id(order_id: int, session=Depends(get_async_session)) -> OrderReadSchema:
     statement = select(Order).where(Order.id == order_id)
     result = await session.scalar(statement)

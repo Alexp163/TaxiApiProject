@@ -3,6 +3,7 @@ from sqlalchemy import select, insert, delete, update
 
 from database import get_async_session
 from .models import Driver
+from .dependecies import Order, OrderReadSchema
 from .schemas import DriverCreateSchema, DriverReadSchema, DriverUpdateSchema
 
 router = APIRouter(tags=["drivers"], prefix="/drivers")
@@ -31,6 +32,13 @@ async def get_drivers(session=Depends(get_async_session)) -> list[DriverReadSche
 async def get_driver_by_id(driver_id: int, session=Depends(get_async_session)) -> DriverReadSchema:
     statement = select(Driver).where(Driver.id == driver_id)
     result = await session.scalar(statement)
+    return result
+
+
+@router.get("/{driver_id}/orders", status_code=status.HTTP_200_OK)  # выводит список заказов водителя
+async def get_driver_orders(driver_id: int, session=Depends(get_async_session)) -> list[OrderReadSchema]:
+    statement = select(Order).where(Order.driver_id == driver_id)
+    result = await session.scalars(statement)
     return result
 
 

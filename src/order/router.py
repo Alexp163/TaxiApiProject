@@ -10,7 +10,7 @@ from .schemas import OrderCreateSchema, OrderReadSchema, OrderUpdateSchema
 router = APIRouter(tags=["orders"], prefix="/orders")
 
 @router.post("/", status_code=status.HTTP_201_CREATED)  # 1) Создание заказа
-async def create_order(order: OrderCreateSchema, start_date: datetime | None = None, end_date: datetime | None = None, session=Depends(get_async_session)) -> OrderReadSchema:
+async def create_order(order: OrderCreateSchema, session=Depends(get_async_session)) -> OrderReadSchema:
     statement = insert(Order).values(
         price=order.price,
         date_trip=order.date_trip,

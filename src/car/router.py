@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from fastapi import APIRouter, status, Depends
 from sqlalchemy import insert, select, delete, update
 
@@ -21,8 +23,8 @@ async def create_car(car: CarCreateSchema, session=Depends(get_async_session)) -
 
 
 @router.get("/", status_code=status.HTTP_202_ACCEPTED)  # 2) получение данных о всех машинах
-async def get_cars(session=Depends(get_async_session)) -> list[CarReadSchema]:
-    statement = select(Car)
+async def get_cars(start_date: datetime | None = None, end_date: datetime | None = None, session=Depends(get_async_session)) -> list[CarReadSchema]:
+    statement = select(Car).where(Car.created_at >= start_date).where(Car.created_at <= end_date)
     result = await session.scalar(statement)
     return list(result)
 

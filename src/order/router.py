@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from fastapi import APIRouter, status, Depends
 from sqlalchemy import insert, select, delete, update
 
@@ -8,7 +10,7 @@ from .schemas import OrderCreateSchema, OrderReadSchema, OrderUpdateSchema
 router = APIRouter(tags=["orders"], prefix="/orders")
 
 @router.post("/", status_code=status.HTTP_201_CREATED)  # 1) Создание заказа
-async def create_order(order: OrderCreateSchema, session=Depends(get_async_session)) -> OrderReadSchema:
+async def create_order(order: OrderCreateSchema, start_date: datetime | None = None, end_date: datetime | None = None, session=Depends(get_async_session)) -> OrderReadSchema:
     statement = insert(Order).values(
         price=order.price,
         date_trip=order.date_trip,
@@ -22,10 +24,11 @@ async def create_order(order: OrderCreateSchema, session=Depends(get_async_sessi
 
 
 @router.get("/", status_code=status.HTTP_200_OK)  # 2) получение данных о всех заказах
-async def get_orders(session=Depends(get_async_session)) -> list[OrderReadSchema]:
-    statement = select(Order)
+async def get_orders(start_date: datetime | None = None, end_date: datetime | None = None, session=Depends(get_async_session)) -> list[OrderReadSchema]:
+    statement = select(Order).where(Order.created_at >= start_date).where(Order.created_at <= end_date)
     result = await session.scalars(statement)
     return list(result)
+
 
 
 @router.get("/{order_id}", status_code=status.HTTP_200_OK)  # 3) получение данных о заказе по id

@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy import select, insert, delete, update
 
 from database import get_async_session
-from .models import Driver
 from .dependecies import Order, OrderReadSchema
+from .models import Driver
 from .schemas import DriverCreateSchema, DriverReadSchema, DriverUpdateSchema
 
 router = APIRouter(tags=["drivers"], prefix="/drivers")
@@ -42,7 +42,7 @@ async def get_driver_orders(driver_id: int, session=Depends(get_async_session)) 
     return result
 
 
-@router.delete("/{driver_id}", status_code=status.HTTP_204_NO_CONTENT) # 4) Удаление водителя по id
+@router.delete("/{driver_id}", status_code=status.HTTP_204_NO_CONTENT)  # 4) Удаление водителя по id
 async def delete_driver_by_id(driver_id: int, session=Depends(get_async_session)) -> None:
     statement = delete(Driver).where(Driver.id == driver_id)
     await session.execute(statement)

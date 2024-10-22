@@ -9,6 +9,7 @@ from database import Base
 
 class Order(Base):
     __tablename__ = "order"
+
     id: Mapped[int] = mapped_column(primary_key=True)
     price: Mapped[float] = mapped_column()  # стоимость поездки
     date_trip: Mapped[datetime] = mapped_column()  # дата поездки

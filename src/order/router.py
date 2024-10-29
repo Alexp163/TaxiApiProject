@@ -24,8 +24,20 @@ async def create_order(order: OrderCreateSchema, session=Depends(get_async_sessi
 
 
 @router.get("/", status_code=status.HTTP_200_OK)  # 2) получение данных о всех заказах
-async def get_orders(start_date: datetime | None = None, end_date: datetime | None = None, session=Depends(get_async_session)) -> list[OrderReadSchema]:
-    statement = select(Order).where(Order.created_at >= start_date).where(Order.created_at <= end_date)
+async def get_orders(start_date: datetime | None = None,
+                     end_date: datetime | None = None,
+                     start_price: float | None = None,
+                     end_price: float | None = None,
+                     session=Depends(get_async_session)) -> list[OrderReadSchema]:
+    statement = select(Order)
+    if start_date is not None:
+        statement = statement.where(Order.created_at >= start_date)
+    if end_date is not None:
+        statement = statement.where(Order.created_at <= end_date)
+    if start_price is not None:
+        statement = statement.where(Order.price >= start_price)
+    if end_price is not None:
+        statement = statement.where(Order.price <= end_price)
     result = await session.scalars(statement)
     return list(result)
 

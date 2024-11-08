@@ -10,10 +10,7 @@ router = APIRouter(tags=["categories"], prefix="/categories")
 
 @router.post("/", status_code=status.HTTP_201_CREATED)  # 1) Создание категории
 async def create_category(category: CategoryCreateSchema, session=Depends(get_async_session)) -> CategoryReadSchema:
-    statement = insert(Category).values(
-        title=category.title,
-        schedule=category.schedule
-    ).returning(Category)
+    statement = insert(Category).values(title=category.title, schedule=category.schedule).returning(Category)
     result = await session.scalar(statement)
     await session.commit()
     return result
@@ -41,17 +38,15 @@ async def delete_category_by_id(category_id: int, session=Depends(get_async_sess
 
 
 @router.put("/category_id", status_code=status.HTTP_200_OK)  # 5) Обновление категории по id
-async def update_category_by_id(category_id: int, category: CategoryUpdateSchema,
-                                session=Depends(get_async_session)) -> CategoryReadSchema:
-    statement = update(Category).where(Category.id == category_id).values(
-        title=category.title,
-        schedule=category.schedule
-    ).returning(Category)
+async def update_category_by_id(
+    category_id: int, category: CategoryUpdateSchema, session=Depends(get_async_session)
+) -> CategoryReadSchema:
+    statement = (
+        update(Category)
+        .where(Category.id == category_id)
+        .values(title=category.title, schedule=category.schedule)
+        .returning(Category)
+    )
     result = await session.scalar(statement)
     await session.commit()
     return result
-
-
-
-
-

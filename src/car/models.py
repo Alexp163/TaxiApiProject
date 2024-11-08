@@ -21,4 +21,3 @@ class Car(Base):  # машина
 
     def __repr__(self):
         return f"{self.id} {self.brand} {self.category_id} {self.release} {self.configuration} {self.condition}"
-

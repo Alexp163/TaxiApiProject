@@ -9,21 +9,23 @@ from .schemas import CarCreateSchema, CarReadSchema, CarUpdateSchema
 
 router = APIRouter(tags=["cars"], prefix="/cars")
 
+
 @router.post("/", status_code=status.HTTP_201_CREATED)  # 1) создание машины
 async def create_car(car: CarCreateSchema, session=Depends(get_async_session)) -> CarReadSchema:
-    statement = insert(Car).values(
-        brand=car.brand,
-        release=car.release,
-        configuration=car.configuration,
-        condition=car.condition
-    ).returning(Car)
+    statement = (
+        insert(Car)
+        .values(brand=car.brand, release=car.release, configuration=car.configuration, condition=car.condition)
+        .returning(Car)
+    )
     result = await session.scalar(statement)
     await session.commit()
     return result
 
 
 @router.get("/", status_code=status.HTTP_202_ACCEPTED)  # 2) получение данных о всех машинах
-async def get_cars(start_date: datetime | None = None, end_date: datetime | None = None, session=Depends(get_async_session)) -> list[CarReadSchema]:
+async def get_cars(
+    start_date: datetime | None = None, end_date: datetime | None = None, session=Depends(get_async_session)
+) -> list[CarReadSchema]:
     statement = select(Car).where(Car.created_at >= start_date).where(Car.created_at <= end_date)
     result = await session.scalar(statement)
     return list(result)
@@ -44,13 +46,13 @@ async def delete_car_by_id(car_id: int, session=Depends(get_async_session)) -> N
 
 
 @router.put("/{car_id}", status_code=status.HTTP_200_OK)  # 5) Обновление данных
-async def update_car_by_id(car_id: int, car: CarUpdateSchema, session=Depends(get_async_session))  -> CarReadSchema:
-    statement = update(Car).where(Car.id == car_id).values(
-    brand=car.brand,
-    release=car.release,
-    configuration=car.configuration,
-    condition=car.condition
-    ).returning(Car)
+async def update_car_by_id(car_id: int, car: CarUpdateSchema, session=Depends(get_async_session)) -> CarReadSchema:
+    statement = (
+        update(Car)
+        .where(Car.id == car_id)
+        .values(brand=car.brand, release=car.release, configuration=car.configuration, condition=car.condition)
+        .returning(Car)
+    )
     result = await session.scalar(statement)
     await session.commit()
     return result

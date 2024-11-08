@@ -5,17 +5,19 @@ from pydantic import BaseModel
 class ClientReadSchema(BaseModel):
     id: int
     name: str
-    rating: str
+    rating: float
+    wallet: float
     created_at: datetime
     updated_at: datetime
 
 
 class ClientCreateSchema(BaseModel):
     name: str
-    rating: str
+    rating: float
+    wallet: float
 
 
 class ClientUpdateSchema(BaseModel):
     name: str
-    rating: str
-
+    rating: float
+    wallet: float

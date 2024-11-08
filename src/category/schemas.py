@@ -19,6 +19,3 @@ class CategoryCreateSchema(BaseModel):
 class CategoryUpdateSchema(BaseModel):
     title: str
     schedule: str
-
-
-

@@ -5,10 +5,10 @@ from datetime import datetime
 
 class CarReadSchema(BaseModel):
     id: int
-    brand: str # марка автомобиля
-    release: str # год выпуска
-    configuration: str # комплектация автомобиля
-    condition: str # состояние автомобиля
+    brand: str  # марка автомобиля
+    release: str  # год выпуска
+    configuration: str  # комплектация автомобиля
+    condition: str  # состояние автомобиля
     created_at: datetime  # дата создания
     updated_at: datetime  # дата обновления
 
@@ -25,5 +25,3 @@ class CarUpdateSchema(BaseModel):
     release: str
     configuration: str
     condition: str
-
-

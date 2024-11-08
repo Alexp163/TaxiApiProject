@@ -16,4 +16,3 @@ class Category(Base):  # категория машины
 
     def __repr__(self):
         return f"{self.id} {self.title} {self.schedule}"
-

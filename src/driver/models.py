@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column,relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 
 from database import Base
@@ -20,6 +20,7 @@ class Driver(Base):  # модель водителя
 
     def __repr__(self):
         return f"{self.name} {self.experience} {self.category}"
+
 
 class Driver2Car(Base):
     __tablename__ = "driver2car"

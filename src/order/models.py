@@ -18,8 +18,10 @@ class Order(Base):
     client_id: Mapped[int | None] = mapped_column(ForeignKey("client.id"))
     driver: Mapped["Driver"] = relationship("Driver")
     driver_id: Mapped[int | None] = mapped_column(ForeignKey("driver.id"))
+    car: Mapped["Car"] = relationship("Car")
+    car_id: Mapped[int | None] = mapped_column(ForeignKey("car.id"))
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(server_default=func.now(), onupdate=func.now())
 
     def __repr__(self):
-        return f"{self.price} {self.date_trip} {self.travel_time} {self.driver_id} {self.client_id}"
+        return f"{self.price} {self.date_trip} {self.travel_time} {self.driver_id} {self.client_id} {self.car_id}"

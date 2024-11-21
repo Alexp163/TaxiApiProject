@@ -9,18 +9,19 @@ from .schemas import CarCreateSchema, CarReadSchema, CarUpdateSchema
 
 router = APIRouter(tags=["cars"], prefix="/cars")
 
-
+# fmt: off
 @router.post("/", status_code=status.HTTP_201_CREATED)  # 1) создание машины
 async def create_car(car: CarCreateSchema, session=Depends(get_async_session)) -> CarReadSchema:
-    statement = (
-        insert(Car)
-        .values(brand=car.brand, release=car.release, configuration=car.configuration, condition=car.condition)
-        .returning(Car)
-    )
+    statement = insert(Car).values(
+        brand=car.brand,
+        release=car.release,
+        configuration=car.configuration,
+        condition=car.condition
+    ).returning(Car)
     result = await session.scalar(statement)
     await session.commit()
     return result
-
+# fmt: on
 
 @router.get("/", status_code=status.HTTP_202_ACCEPTED)  # 2) получение данных о всех машинах
 async def get_cars(
@@ -44,15 +45,16 @@ async def delete_car_by_id(car_id: int, session=Depends(get_async_session)) -> N
     await session.execute(statement)
     await session.commit()
 
-
+# fmt: off
 @router.put("/{car_id}", status_code=status.HTTP_200_OK)  # 5) Обновление данных
 async def update_car_by_id(car_id: int, car: CarUpdateSchema, session=Depends(get_async_session)) -> CarReadSchema:
-    statement = (
-        update(Car)
-        .where(Car.id == car_id)
-        .values(brand=car.brand, release=car.release, configuration=car.configuration, condition=car.condition)
-        .returning(Car)
-    )
+    statement = update(Car).where(Car.id == car_id).values(
+        brand=car.brand,
+        release=car.release,
+        configuration=car.configuration,
+        condition=car.condition
+    ).returning(Car)
     result = await session.scalar(statement)
     await session.commit()
     return result
+# fmt: on

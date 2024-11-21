@@ -8,18 +8,18 @@ from .schemas import DriverCreateSchema, DriverReadSchema, DriverUpdateSchema
 
 router = APIRouter(tags=["drivers"], prefix="/drivers")
 
-
+# fmt: off
 @router.post("/", status_code=status.HTTP_201_CREATED)  # 1) Создание модели водителя
 async def create_driver(driver: DriverCreateSchema, session=Depends(get_async_session)) -> DriverReadSchema:
-    statement = (
-        insert(Driver)
-        .values(name=driver.name, experience=driver.experience, category=driver.category)
-        .returning(Driver)
-    )
+    statement = insert(Driver).values(
+        name=driver.name,
+        experience=driver.experience,
+        category=driver.category
+    ).returning(Driver)
     result = await session.scalar(statement)
     await session.commit()
     return result
-
+# fmt: on
 
 @router.get("/", status_code=status.HTTP_202_ACCEPTED)  # 2) Получение данных о всех водителях
 async def get_drivers(session=Depends(get_async_session)) -> list[DriverReadSchema]:  # "Depends" - зависит
@@ -48,17 +48,16 @@ async def delete_driver_by_id(driver_id: int, session=Depends(get_async_session)
     await session.execute(statement)
     await session.commit()
 
-
+# fmt: off
 @router.put("/{driver_id}", status_code=status.HTTP_200_OK)
-async def update_driver_by_id(
-    driver_id: int, driver: DriverUpdateSchema, session=Depends(get_async_session)
-) -> DriverUpdateSchema:
-    statement = (
-        update(Driver)
-        .where(Driver.id == driver_id)
-        .values(name=driver.name, experience=driver.experience, category=driver.category)
-        .returning(Driver)
-    )
+async def update_driver_by_id(driver_id: int, driver: DriverUpdateSchema,
+                              session=Depends(get_async_session)) -> DriverUpdateSchema:
+    statement = update(Driver).where(Driver.id == driver_id).values(
+        name=driver.name,
+        experience=driver.experience,
+        category=driver.category
+    ).returning(Driver)
     result = await session.scalar(statement)
     await session.commit()
     return result
+# fmt: on

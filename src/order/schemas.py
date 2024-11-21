@@ -10,6 +10,7 @@ class OrderReadSchema(BaseModel):
     travel_time: timedelta  # продолжительность поездки
     client_id: int
     driver_id: int
+    car_id: int
     created_at: datetime
     updated_at: datetime
 
@@ -20,6 +21,7 @@ class OrderCreateSchema(BaseModel):
     travel_time: timedelta  # продолжительность поездки
     client_id: int
     driver_id: int
+    car_id: int
 
 
 class OrderUpdateSchema(BaseModel):
@@ -28,3 +30,4 @@ class OrderUpdateSchema(BaseModel):
     travel_time: timedelta  # продолжительность поездки
     client_id: int
     driver_id: int
+    car_id: int

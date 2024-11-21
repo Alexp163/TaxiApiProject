@@ -8,6 +8,7 @@ class DriverReadSchema(BaseModel):
     name: str
     experience: str
     category: str
+    wallet: float
     created_at: datetime
     updated_at: datetime
 
@@ -16,9 +17,12 @@ class DriverCreateSchema(BaseModel):
     name: str
     experience: str
     category: str
+    wallet: float
 
 
 class DriverUpdateSchema(BaseModel):
     name: str
     experience: str
     category: str
+    wallet: float
+

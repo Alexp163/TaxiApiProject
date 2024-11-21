@@ -16,8 +16,10 @@ class Car(Base):  # машина
     release: Mapped[str] = mapped_column()  # год выпуска
     configuration: Mapped[str] = mapped_column()  # комплектация автомобиля
     condition: Mapped[str] = mapped_column()  # техническое состояние автомобиля
+    rent: Mapped[float] = mapped_column(server_default="0")  # счет аренды автомобиля
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())  # дата создания
     updated_at: Mapped[datetime] = mapped_column(server_default=func.now(), onupdate=func.now())  # дата обновления
 
     def __repr__(self):
-        return f"{self.id} {self.brand} {self.category_id} {self.release} {self.configuration} {self.condition}"
+        return (f"{self.id} {self.brand} {self.category_id} {self.release} {self.configuration} {self.condition}"
+                f" {self.rent}")

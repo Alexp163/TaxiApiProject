@@ -19,5 +19,5 @@ class Client(Base):  # клиент
     updated_at: Mapped[datetime] = mapped_column(server_default=func.now(), onupdate=func.now())  # дата обновления
 
     def __repr__(self):
-        return f"{self.id} {self.name} {self.rating}"
+        return f"{self.id} {self.name} {self.rating} {self.wallet}"
 # fmt: on

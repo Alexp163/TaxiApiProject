@@ -14,12 +14,13 @@ class Driver(Base):  # модель водителя
     cars: Mapped[list["Car"]] = relationship("Car", secondary="driver2car")
     name: Mapped[str] = mapped_column()  # ФИО
     experience: Mapped[str] = mapped_column()  # опыт работы
-    category: Mapped[str] = mapped_column()  # категория вод.прав
+    category: Mapped[str] = mapped_column()  # категория вод. прав
+    wallet: Mapped[float] = mapped_column(server_default="0")  # кошелек водителя
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(server_default=func.now(), onupdate=func.now())
 
     def __repr__(self):
-        return f"{self.name} {self.experience} {self.category}"
+        return f"{self.name} {self.experience} {self.category} {self.wallet}"
 
 
 class Driver2Car(Base):

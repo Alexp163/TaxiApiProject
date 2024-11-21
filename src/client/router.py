@@ -2,21 +2,23 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy import insert, select, delete, update
 
 from database import get_async_session
-
-from .models import Client
 from .dependecies import Order, OrderReadSchema
+from .models import Client
 from .schemas import ClientCreateSchema, ClientReadSchema, ClientUpdateSchema
 
 router = APIRouter(tags=["clients"], prefix="/clients")
 
-
+# fmt: off
 @router.post("/", status_code=status.HTTP_201_CREATED)  # 1) создание клиента
 async def create_client(client: ClientCreateSchema, session=Depends(get_async_session)) -> ClientReadSchema:  #
-    statement = insert(Client).values(name=client.name, rating=client.rating).returning(Client)
+    statement = insert(Client).values(
+        name=client.name,
+        rating=client.rating
+    ).returning(Client)
     result = await session.scalar(statement)
     await session.commit()
     return result
-
+#fmt: on
 
 @router.get("/", status_code=status.HTTP_202_ACCEPTED)  # 2) Получение данных о всех клиентах
 async def get_client(max_rating: float | None = None,
@@ -51,15 +53,15 @@ async def delete_client_by_id(client_id: int, session=Depends(get_async_session)
     await session.execute(statement)
     await session.commit()
 
-
+# fmt: off
 @router.put("/{client_id}", status_code=status.HTTP_200_OK)  # 5) Обновление данных клиента по id
-async def update_client_by_id(
-    client_id: int, client: ClientUpdateSchema, session=Depends(get_async_session)
-) -> ClientReadSchema:
-    statement = (
-        update(Client).where(Client.id == client_id).values(name=client.name, rating=client.rating).returning(Client)
-    )
+async def update_client_by_id(client_id: int, client: ClientUpdateSchema,
+                              session=Depends(get_async_session)) -> ClientReadSchema:
+    statement = update(Client).where(Client.id == client_id).values(
+        name=client.name,
+        rating=client.rating
+    ).returning(Client)
     result = await session.scalar(statement)
     await session.commit()
     return result
-
+# fmt: on

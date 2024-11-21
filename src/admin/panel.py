@@ -6,7 +6,7 @@ from .dependecies import Driver, Client, Car, Category, Order
 
 
 class DriverModelView(ModelView, model=Driver):
-    column_list = [Driver.name, Driver.experience, Driver.category]
+    column_list = [Driver.name, Driver.experience, Driver.category, Driver.wallet]
     form_excluded_columns = [Driver.created_at, Driver.updated_at]
 
 
@@ -16,7 +16,7 @@ class ClientModelView(ModelView, model=Client):
 
 
 class CarModelView(ModelView, model=Car):
-    column_list = [Car.brand, Car.category, Car.category_id, Car.release, Car.condition, Car.configuration]
+    column_list = [Car.brand, Car.category, Car.category_id, Car.release, Car.condition, Car.configuration, Car.rent]
     form_excluded_columns = [Car.created_at, Car.updated_at]
 
 
@@ -26,7 +26,7 @@ class CategoryModelView(ModelView, model=Category):
 
 
 class OrderModelView(ModelView, model=Order):
-    column_list = [Order.price, Order.date_trip, Order.travel_time, Order.client_id, Order.driver_id]
+    column_list = [Order.price, Order.date_trip, Order.travel_time, Order.client_id, Order.driver_id, Order.car_id]
     form_excluded_columns = [Order.created_at, Order.updated_at]
 
 

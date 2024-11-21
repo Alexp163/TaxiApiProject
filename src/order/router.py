@@ -3,39 +3,65 @@ from datetime import datetime
 from fastapi import APIRouter, status, Depends
 from sqlalchemy import insert, select, delete, update
 
-from database import get_async_session
+from .dependencies import Client, Driver, Car
+from database import get_async_session, Base, AsyncSession
 from .models import Order
 from .schemas import OrderCreateSchema, OrderReadSchema, OrderUpdateSchema
+from .utils import increase_wallet
+
 
 router = APIRouter(tags=["orders"], prefix="/orders")
 
 
+
+# fmt: off
 @router.post("/", status_code=status.HTTP_201_CREATED)  # 1) Создание заказа
 async def create_order(order: OrderCreateSchema, session=Depends(get_async_session)) -> OrderReadSchema:
-    statement = (
-        insert(Order)
-        .values(
+    statement = insert(Order).values(
             price=order.price,
             date_trip=order.date_trip,
             travel_time=order.travel_time,
             client_id=order.client_id,
             driver_id=order.driver_id,
-        )
-        .returning(Order)
-    )
+            car_id=order.car_id
+    ).returning(Order)
     result = await session.scalar(statement)
+    # statement = select(Client).where(Client.id == order.client_id)
+    # client = await session.scalar(statement)
+    # wallet = client.wallet - order.price
+    # statement = update(Client).where(Client.id == order.client_id).values(
+    #     wallet=wallet
+    # )
+    # await session.execute(statement)
+    await increase_wallet(Client, order.price, session, 1, order.client_id)
+    # statement = select(Driver).where(Driver.id == order.driver_id)
+    # driver = await session.scalar(statement)
+    # wallet = driver.wallet + (order.price * 0.75)
+    # statement = update(Driver).where(Driver.id == order.driver_id).values(
+    #     wallet=wallet
+    # )
+    # await session.execute(statement)
+    await increase_wallet(Driver, order.price, session, 0.75, order.driver_id)
+    # statement = select(Car).where(Car.id == order.car_id)
+    # car = await session.scalar(statement)
+    # rent = car.rent + (order.price * 0.25)
+    # statement = update(Car).where(Car.id == order.car_id).values(
+    #     rent=rent
+    # )
+    # await session.execute(statement)
+    await increase_wallet(Car, order.price, session, 0.25, order.car_id)
     await session.commit()
     return result
+# fmt: on
 
 
+# fmt: off
 @router.get("/", status_code=status.HTTP_200_OK)  # 2) получение данных о всех заказах
-async def get_orders(
-    start_date: datetime | None = None,
-    end_date: datetime | None = None,
-    start_price: float | None = None,
-    end_price: float | None = None,
-    session=Depends(get_async_session),
-) -> list[OrderReadSchema]:
+async def get_orders(start_date: datetime | None = None,
+                     end_date: datetime | None = None,
+                     start_price: float | None = None,
+                     end_price: float | None = None,
+    session=Depends(get_async_session)) -> list[OrderReadSchema]:
     statement = select(Order)
     if start_date is not None:
         statement = statement.where(Order.created_at >= start_date)
@@ -47,6 +73,7 @@ async def get_orders(
         statement = statement.where(Order.price <= end_price)
     result = await session.scalars(statement)
     return list(result)
+# fmt: on
 
 
 @router.get("/{order_id}", status_code=status.HTTP_200_OK)  # 3) получение данных о заказе по id
@@ -63,22 +90,19 @@ async def delete_order_by_id(order_id: int, session=Depends(get_async_session)) 
     await session.commit()
 
 
+# fmt: off
 @router.put("/{order_id}", status_code=status.HTTP_200_OK)  # 5) обновление заказа по id
-async def update_order_by_id(
-    order_id: int, order: OrderUpdateSchema, session=Depends(get_async_session)
-) -> OrderReadSchema:
-    statement = (
-        update(Order)
-        .where(Order.id == order_id)
-        .values(
+async def update_order_by_id(order_id: int, order: OrderUpdateSchema,
+                             session=Depends(get_async_session)) -> OrderReadSchema:
+    statement = update(Order).where(Order.id == order_id).values(
             price=order.price,  # стоимость поездки
             date_trip=order.date_trip,  # дата поездки
             travel_time=order.travel_time,  # продолжительность поездки
             client_id=order.client_id,
             driver_id=order.driver_id,
-        )
-        .returning(Order)
-    )
+            car_id=order.car_id
+        ).returning(Order)
     result = await session.scalar(statement)
     await session.commit()
     return result
+# fmt: on

@@ -65,3 +65,4 @@ async def update_client_by_id(client_id: int, client: ClientUpdateSchema,
     await session.commit()
     return result
 # fmt: on
+

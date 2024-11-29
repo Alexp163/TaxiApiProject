@@ -26,29 +26,8 @@ async def create_order(order: OrderCreateSchema, session=Depends(get_async_sessi
             car_id=order.car_id
     ).returning(Order)
     result = await session.scalar(statement)
-    # statement = select(Client).where(Client.id == order.client_id)
-    # client = await session.scalar(statement)
-    # wallet = client.wallet - order.price
-    # statement = update(Client).where(Client.id == order.client_id).values(
-    #     wallet=wallet
-    # )
-    # await session.execute(statement)
-    await increase_wallet(Client, order.price, session, 1, order.client_id)
-    # statement = select(Driver).where(Driver.id == order.driver_id)
-    # driver = await session.scalar(statement)
-    # wallet = driver.wallet + (order.price * 0.75)
-    # statement = update(Driver).where(Driver.id == order.driver_id).values(
-    #     wallet=wallet
-    # )
-    # await session.execute(statement)
+    await increase_wallet(Client, order.price, session, -1, order.client_id)
     await increase_wallet(Driver, order.price, session, 0.75, order.driver_id)
-    # statement = select(Car).where(Car.id == order.car_id)
-    # car = await session.scalar(statement)
-    # rent = car.rent + (order.price * 0.25)
-    # statement = update(Car).where(Car.id == order.car_id).values(
-    #     rent=rent
-    # )
-    # await session.execute(statement)
     await increase_wallet(Car, order.price, session, 0.25, order.car_id)
     await session.commit()
     return result

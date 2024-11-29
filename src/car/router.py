@@ -23,14 +23,14 @@ async def create_car(car: CarCreateSchema, session=Depends(get_async_session)) -
     return result
 # fmt: on
 
+# fmt: off
 @router.get("/", status_code=status.HTTP_202_ACCEPTED)  # 2) получение данных о всех машинах
-async def get_cars(
-    start_date: datetime | None = None, end_date: datetime | None = None, session=Depends(get_async_session)
-) -> list[CarReadSchema]:
+async def get_cars(start_date: datetime | None = None,
+                   end_date: datetime | None = None, session=Depends(get_async_session)) -> list[CarReadSchema]:
     statement = select(Car).where(Car.created_at >= start_date).where(Car.created_at <= end_date)
     result = await session.scalar(statement)
     return list(result)
-
+# fmt: on
 
 @router.get("/{car_id}", status_code=status.HTTP_202_ACCEPTED)  # 3) Получение данных о машине по id
 async def get_car_by_id(car_id: int, session=Depends(get_async_session)) -> CarReadSchema:
